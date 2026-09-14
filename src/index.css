@@ -1,0 +1,38 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Manrope:wght@200..800&display=swap');
+
+@theme {
+  --color-ivory: #F5F1E9;
+  --color-white-surface: #FCFBF8;
+  --color-midnight: #090B0F;
+  --color-dark-surface: #11141A;
+  --color-charcoal: #191919;
+  --color-copper: #B96E3B;
+  --color-copper-highlight: #D18A57;
+  --color-muted: #6D6A66;
+  --color-muted-dark: #A9ADB5;
+  --color-light-border: #DDD7CE;
+  --color-dark-border: #292E36;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Manrope", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-ivory);
+    color: var(--color-charcoal);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+
+  ::selection {
+    background-color: var(--color-copper);
+    color: white;
+  }
+}
