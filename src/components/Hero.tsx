@@ -1,58 +1,105 @@
+import { motion, useReducedMotion } from 'motion/react';
 import { Container } from './ui/Container';
 import { Button } from './ui/Button';
-import { motion } from 'motion/react';
+import { SystemPanel } from './visuals/SystemPanel';
+import { EASE } from '../lib/motion';
+import { CONTACT_ANCHOR } from '../config/site';
+import { track } from '../lib/analytics';
+
+const capabilities = [
+  'CRM',
+  'Operations',
+  'Inventory',
+  'Sales',
+  'Reporting',
+  'Automation',
+];
 
 export function Hero() {
+  const reduceMotion = useReducedMotion();
+
+  const rise = (delay: number) =>
+    reduceMotion
+      ? {}
+      : {
+          initial: { opacity: 0, y: 18 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.55, delay, ease: EASE },
+        };
+
   return (
-    <section className="relative bg-midnight pt-40 pb-24 lg:pt-52 lg:pb-32 overflow-hidden">
-      {/* Subtle background texture/geometry */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <div className="absolute top-0 right-0 w-1/3 h-full border-l border-dark-border/50" />
-        <div className="absolute top-1/2 left-0 w-full h-px bg-dark-border/50" />
-        <div className="absolute right-1/4 top-0 w-px h-full bg-dark-border/30" />
-        <div className="absolute bottom-1/4 left-1/4 w-px h-1/2 bg-dark-border/30" />
+    <section className="relative bg-midnight pt-28 sm:pt-32 lg:pt-40 pb-16 lg:pb-24 overflow-hidden">
+      {/* Structural grid rules */}
+      <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-x-0 bottom-0 h-px bg-dark-border" />
       </div>
 
-      <Container className="relative z-10">
-        <div className="max-w-4xl mx-auto text-center flex flex-col items-center">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.1] mb-8"
-          >
-            Software built around <br className="hidden sm:block" />
-            <span className="text-muted-dark">your business.</span>
-          </motion.h1>
-          
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="text-lg sm:text-xl text-muted-dark max-w-2xl mb-12 leading-relaxed"
-          >
-            We design custom systems that replace spreadsheets, manual processes and disconnected tools with software built around the way your company actually operates.
-          </motion.p>
+      <Container className="relative">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,55fr)_minmax(0,45fr)] gap-14 lg:gap-12 xl:gap-16 items-center">
+          {/* Left: message */}
+          <div className="lg:pr-8 xl:pr-14">
+            <motion.div {...rise(0)} className="flex items-center gap-3 mb-7">
+              <span className="h-px w-8 bg-copper" />
+              <span className="text-eyebrow uppercase text-copper-highlight">
+                Custom business software
+              </span>
+            </motion.div>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
-          >
-            <Button className="w-full sm:w-auto">Discuss Your Project</Button>
-            <Button variant="dark-outline" className="w-full sm:w-auto">Explore Our Solutions</Button>
-          </motion.div>
+            <motion.h1
+              {...rise(0.06)}
+              className="text-hero font-bold text-white-surface max-w-[15ch]"
+            >
+              Software built around how your business actually works.
+            </motion.h1>
 
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.4 }}
-            className="mt-20 pt-8 border-t border-dark-border w-full max-w-3xl"
+            <motion.p
+              {...rise(0.12)}
+              className="mt-7 text-lead text-muted-dark max-w-[52ch]"
+            >
+              We design custom systems that replace spreadsheets, manual processes and
+              disconnected tools with software built around the way your company operates.
+            </motion.p>
+
+            <motion.div
+              {...rise(0.18)}
+              className="mt-9 flex flex-col sm:flex-row sm:items-center gap-3"
+            >
+              <Button
+                href={CONTACT_ANCHOR}
+                variant="solid-invert"
+                className="w-full sm:w-auto"
+                onClick={() => track('cta_hero_click')}
+              >
+                Discuss Your Project
+              </Button>
+              <Button href="/#solutions" variant="outline-invert" className="w-full sm:w-auto">
+                Explore Solutions
+              </Button>
+            </motion.div>
+
+            <motion.div {...rise(0.26)} className="mt-10 pt-6 border-t border-dark-border">
+              <ul className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                {capabilities.map((capability, i) => (
+                  <li key={capability} className="flex items-center gap-3">
+                    <span className="text-ui font-medium tracking-wide text-muted-dark">
+                      {capability}
+                    </span>
+                    {i < capabilities.length - 1 && (
+                      <span aria-hidden="true" className="w-1 h-1 rounded-full bg-copper/70" />
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          </div>
+
+          {/* Right: product visual */}
+          <motion.div
+            initial={reduceMotion ? false : { opacity: 0, x: 26 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.22, ease: EASE }}
           >
-            <p className="text-sm font-medium text-muted-dark tracking-widest uppercase">
-              Custom business software &nbsp;&bull;&nbsp; Web platforms &nbsp;&bull;&nbsp; Internal systems &nbsp;&bull;&nbsp; Automation
-            </p>
+            <SystemPanel />
           </motion.div>
         </div>
       </Container>

@@ -1,0 +1,11 @@
+<!-- Static mirror of the BX monogram in src/components/ui/BriveXisLogo.tsx.
+     The mark (45x32) is placed on a midnight square so it holds up against
+     both light and dark browser chrome. Keep the two paths in sync. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="BriveXis">
+  <rect width="64" height="64" fill="#090B0F"/>
+  <g transform="translate(3 11.38) scale(1.28889)">
+    <path fill="#F5F1E9" fill-rule="evenodd" d="M0 0 H13.8 L17 3.2 V18.2 L20 21.2 V28.8 L16.8 32 H0 Z M6 4.8 H12.6 V13.6 H6 Z M6 18.4 H12.9 L15.9 21.4 V27.2 H6 Z"/>
+    <path fill="#B96E3B" d="M26 0 H32 L45 32 H39 Z"/>
+    <path fill="#B96E3B" d="M39 0 H45 L32 32 H26 Z"/>
+  </g>
+</svg>

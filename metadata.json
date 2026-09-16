@@ -1,6 +1,6 @@
 {
   "name": "BriveXis",
-  "description": "Software built around your business. We design custom systems that replace spreadsheets, manual processes and disconnected tools.",
+  "description": "Custom business software built around real operations. BriveXis designs systems that replace spreadsheets, manual processes and disconnected tools.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": []
 }

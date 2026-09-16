@@ -1,85 +1,240 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { Menu, X } from 'lucide-react';
 import { Container } from './ui/Container';
 import { Button } from './ui/Button';
-import { Menu, X } from 'lucide-react';
+import { BriveXisLogo } from './ui/BriveXisLogo';
+import { DURATION, EASE } from '../lib/motion';
+import { CONTACT_ANCHOR, primaryNav, routes } from '../config/site';
+import { useRouter } from '../lib/router';
+import { track } from '../lib/analytics';
+
+/** Tailwind's `lg` breakpoint, where the mobile panel is replaced by the nav bar. */
+const DESKTOP_QUERY = '(min-width: 1024px)';
+
+const sectionId = (href: string) => href.split('#')[1] ?? '';
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const reduceMotion = useReducedMotion();
+  const { pathname } = useRouter();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
+    const handleScroll = () => setIsScrolled(window.scrollY > 8);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: 'Solutions', href: '#solutions' },
-    { name: 'Industries', href: '#industries' },
-    { name: 'Demos', href: '#demos' },
-    { name: 'Why BriveXis', href: '#why-us' },
-    { name: 'Process', href: '#process' },
-    { name: 'About', href: '#about' },
-  ];
+  // Active section: one observer for every nav target, no per-element scroll
+  // handlers. Re-runs per route because the header outlives the page swap, and
+  // the sections it observes only exist on the home page.
+  useEffect(() => {
+    const sections = primaryNav
+      .map((link) => document.getElementById(sectionId(link.href)))
+      .filter((section): section is HTMLElement => section !== null);
+
+    if (sections.length === 0) {
+      setActiveId(null);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((entry) => entry.isIntersecting);
+        if (visible.length === 0) return;
+        const topmost = visible.reduce((closest, entry) =>
+          entry.boundingClientRect.top < closest.boundingClientRect.top ? entry : closest,
+        );
+        setActiveId(topmost.target.id);
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      setMenuOpen(false);
+      // Escape must hand focus back to the control that opened the panel,
+      // otherwise keyboard users land on a detached document position.
+      menuButtonRef.current?.focus();
+    };
+
+    // The panel overlays the page, so the page behind it must not scroll.
+    const { overflow } = document.body.style;
+    document.body.style.overflow = 'hidden';
+
+    // Resizing up to the desktop layout hides the panel; leaving it "open"
+    // would keep the page locked with no visible way to release it.
+    const desktop = window.matchMedia(DESKTOP_QUERY);
+    const handleBreakpoint = (event: MediaQueryListEvent) => {
+      if (event.matches) setMenuOpen(false);
+    };
+
+    window.addEventListener('keydown', handleKey);
+    desktop.addEventListener('change', handleBreakpoint);
+
+    return () => {
+      document.body.style.overflow = overflow;
+      window.removeEventListener('keydown', handleKey);
+      desktop.removeEventListener('change', handleBreakpoint);
+    };
+  }, [menuOpen]);
+
+  useEffect(() => setMenuOpen(false), [pathname]);
+
+  const condensed = isScrolled || menuOpen;
+
+  const panelMotion = reduceMotion
+    ? { initial: false as const, animate: {}, exit: {} }
+    : {
+        initial: { opacity: 0, height: 0 },
+        animate: { opacity: 1, height: 'auto' },
+        exit: { opacity: 0, height: 0 },
+      };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-midnight/95 backdrop-blur-md border-b border-dark-border py-4' : 'bg-midnight py-6'}`}>
+    <header
+      className={`fixed top-0 inset-x-0 z-50 border-b transition-[background-color,border-color,padding,backdrop-filter] duration-300 ${
+        condensed
+          ? 'bg-midnight/85 backdrop-blur-md border-dark-border py-3.5'
+          : 'bg-transparent border-transparent py-5'
+      }`}
+    >
       <Container>
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <a href="#" className="flex items-center gap-2 group">
-            <div className="w-5 h-5 bg-white rounded-sm relative overflow-hidden transition-transform group-hover:scale-105">
-              <div className="absolute inset-0 bg-copper transform translate-y-2.5 -rotate-45"></div>
-            </div>
-            <span className="font-heading font-bold text-xl tracking-tight text-white">BriveXis</span>
+        <div className="relative z-20 flex items-center justify-between gap-6">
+          <a
+            href={routes.home}
+            className="rounded-[2px] transition-opacity duration-200 hover:opacity-85"
+            aria-label="BriveXis — home"
+          >
+            <BriveXisLogo variant="full" theme="dark" size={21} />
           </a>
 
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a key={link.name} href={link.href} className="text-sm font-medium text-muted-dark hover:text-white transition-colors">
-                {link.name}
-              </a>
-            ))}
+          <nav aria-label="Primary" className="hidden lg:block">
+            <ul className="flex items-center gap-7">
+              {primaryNav.map((link) => {
+                const isActive = activeId === sectionId(link.href);
+                return (
+                  <li key={link.name}>
+                    <a
+                      href={link.href}
+                      aria-current={isActive ? 'location' : undefined}
+                      className={`group relative block py-1 text-[0.9375rem] font-medium transition-colors duration-200 ${
+                        isActive ? 'text-white-surface' : 'text-muted-dark hover:text-white-surface'
+                      }`}
+                    >
+                      {link.name}
+                      <span
+                        aria-hidden="true"
+                        className={`absolute -bottom-0.5 inset-x-0 h-px bg-copper origin-left transition-transform duration-300 ${
+                          isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                        }`}
+                      />
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
           </nav>
 
-          {/* CTA */}
-          <div className="hidden lg:flex items-center gap-4">
-            <Button>Discuss Your Project</Button>
+          <div className="hidden lg:block">
+            <Button
+              href={CONTACT_ANCHOR}
+              variant="solid-invert"
+              size="sm"
+              onClick={() => track('cta_header_click')}
+            >
+              Discuss Your Project
+            </Button>
           </div>
 
-          {/* Mobile Menu Toggle */}
-          <button 
-            className="lg:hidden text-white p-2 -mr-2"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          <button
+            ref={menuButtonRef}
+            type="button"
+            className="lg:hidden -mr-2 p-2 text-white-surface rounded-[2px]"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            onClick={() => setMenuOpen((open) => !open)}
           >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {menuOpen ? <X size={22} strokeWidth={1.75} /> : <Menu size={22} strokeWidth={1.75} />}
           </button>
         </div>
       </Container>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden bg-dark-surface border-b border-dark-border absolute w-full left-0 top-full">
-          <div className="px-6 py-4 flex flex-col gap-4">
-            {navLinks.map((link) => (
-              <a 
-                key={link.name} 
-                href={link.href} 
-                className="text-base font-medium text-white py-2 border-b border-dark-border/50"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {link.name}
-              </a>
-            ))}
-            <div className="pt-4 pb-2">
-              <Button className="w-full">Discuss Your Project</Button>
-            </div>
-          </div>
-        </div>
-      )}
+      <AnimatePresence initial={false}>
+        {menuOpen && (
+          <motion.button
+            key="menu-scrim"
+            type="button"
+            aria-hidden="true"
+            tabIndex={-1}
+            onClick={() => setMenuOpen(false)}
+            initial={reduceMotion ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={reduceMotion ? {} : { opacity: 0 }}
+            transition={{ duration: DURATION.fast }}
+            className="lg:hidden fixed inset-0 z-0 cursor-default bg-midnight/60"
+          />
+        )}
+        {menuOpen && (
+          <motion.div
+            key="mobile-navigation"
+            id="mobile-navigation"
+            {...panelMotion}
+            transition={{ duration: DURATION.medium, ease: EASE }}
+            className="lg:hidden absolute inset-x-0 top-full z-20 overflow-hidden bg-dark-surface border-b border-dark-border"
+          >
+            <Container>
+              <nav aria-label="Primary mobile">
+                <ul className="py-2">
+                  {primaryNav.map((link) => (
+                    <li key={link.name}>
+                      <a
+                        href={link.href}
+                        onClick={() => setMenuOpen(false)}
+                        aria-current={activeId === sectionId(link.href) ? 'location' : undefined}
+                        className="flex items-center gap-3 border-b border-dark-border/70 py-3.5 text-[0.9375rem] font-medium text-white-surface"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className={`w-1 h-1 ${
+                            activeId === sectionId(link.href) ? 'bg-copper' : 'bg-transparent'
+                          }`}
+                        />
+                        {link.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+              <div className="py-4">
+                <Button
+                  href={CONTACT_ANCHOR}
+                  variant="solid-invert"
+                  fullWidth
+                  onClick={() => {
+                    track('cta_header_click');
+                    setMenuOpen(false);
+                  }}
+                >
+                  Discuss Your Project
+                </Button>
+              </div>
+            </Container>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

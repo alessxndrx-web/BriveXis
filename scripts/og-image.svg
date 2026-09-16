@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <!-- Source for public/og-image.png. Regenerate with: npm run build:og
+       Palette and geometry match the site: midnight ground, ivory type,
+       copper accent, and the BX monogram from src/components/ui/BriveXisLogo.tsx. -->
+  <rect width="1200" height="630" fill="#090B0F"/>
+
+  <!-- Structural rules, the same editorial hairlines used across the site -->
+  <rect x="0" y="0" width="1200" height="6" fill="#B96E3B"/>
+  <rect x="80" y="152" width="1040" height="1" fill="#292E36"/>
+  <rect x="80" y="470" width="1040" height="1" fill="#292E36"/>
+
+  <!-- BX monogram, 45x32 units scaled to a 46px cap height -->
+  <g transform="translate(80 74) scale(1.4375)">
+    <path fill="#F5F1E9" fill-rule="evenodd"
+          d="M0 0 H13.8 L17 3.2 V18.2 L20 21.2 V28.8 L16.8 32 H0 Z M6 4.8 H12.6 V13.6 H6 Z M6 18.4 H12.9 L15.9 21.4 V27.2 H6 Z"/>
+    <path fill="#B96E3B" d="M26 0 H32 L45 32 H39 Z"/>
+    <path fill="#B96E3B" d="M39 0 H45 L32 32 H26 Z"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="185" y="110" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif"
+        font-size="42" font-weight="700" letter-spacing="-0.8" fill="#F5F1E9">Brive<tspan fill="#B96E3B">X</tspan>is</text>
+
+  <!-- Eyebrow -->
+  <text x="80" y="212" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif"
+        font-size="19" font-weight="600" letter-spacing="3.6" fill="#D18A57">CUSTOM BUSINESS SOFTWARE</text>
+
+  <!-- Statement -->
+  <text font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="62"
+        font-weight="700" letter-spacing="-1.8" fill="#F5F1E9">
+    <tspan x="80" y="298">Software built around</tspan>
+    <tspan x="80" y="368">how your business</tspan>
+    <tspan x="80" y="438">actually works.</tspan>
+  </text>
+
+  <!-- Capability row. Laid out by the text engine rather than by hand: fixed
+       x positions drift as soon as the rasterizer falls back to another font. -->
+  <text x="80" y="528" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif"
+        font-size="22" fill="#A9ADB5">CRM<tspan fill="#B96E3B" dx="14">&#183;</tspan><tspan dx="14">Operations</tspan><tspan fill="#B96E3B" dx="14">&#183;</tspan><tspan dx="14">Inventory</tspan><tspan fill="#B96E3B" dx="14">&#183;</tspan><tspan dx="14">Reporting</tspan><tspan fill="#B96E3B" dx="14">&#183;</tspan><tspan dx="14">Automation</tspan></text>
+
+  <!-- Location line -->
+  <text x="80" y="580" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif"
+        font-size="20" fill="#6D6A66">Managua, Nicaragua &#183; Serving businesses across the U.S. and Latin America</text>
+</svg>
