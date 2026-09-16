@@ -3,16 +3,63 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BriveXis | Custom Business Software</title>
-    <meta name="description" content="Software built around your business. We design custom systems that replace spreadsheets, manual processes and disconnected tools." />
-    <meta property="og:title" content="BriveXis | Custom Business Software" />
-    <meta property="og:description" content="Software built around your business. We design custom systems that replace spreadsheets, manual processes and disconnected tools." />
+
+    <!-- Defaults for crawlers and link unfurlers. Per-route values are applied
+         at runtime by src/lib/seo.ts; these are what a bot sees first. -->
+    <title>BriveXis | Custom Business Software &amp; Operational Systems</title>
+    <meta
+      name="description"
+      content="BriveXis builds custom business software — CRM, inventory, operations, reporting and automation — designed around how your company actually works. Serving the U.S. and Latin America."
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://brivexis.com/" />
+
+    <meta name="theme-color" content="#090B0F" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <meta property="og:site_name" content="BriveXis" />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://brivexis.com/" />
+    <meta property="og:title" content="BriveXis | Custom Business Software &amp; Operational Systems" />
+    <meta
+      property="og:description"
+      content="Software built around how your business actually works. Custom CRM, inventory, operations and reporting systems."
+    />
+    <meta property="og:image" content="https://brivexis.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="BriveXis — software built around how your business actually works." />
+
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BriveXis | Custom Business Software &amp; Operational Systems" />
+    <meta
+      name="twitter:description"
+      content="Software built around how your business actually works. Custom CRM, inventory, operations and reporting systems."
+    />
+    <meta name="twitter:image" content="https://brivexis.com/og-image.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
+    />
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <div style="padding: 2rem; font-family: system-ui, sans-serif">
+        <h1>BriveXis</h1>
+        <p>
+          This site needs JavaScript enabled. BriveXis builds custom business software —
+          CRM, inventory, operations and reporting systems — designed around how your
+          company actually works.
+        </p>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-
